@@ -1,6 +1,7 @@
 import yfinance as yf
 import numpy as np
 
+#https://mrjbq7.github.io/ta-lib/
 
 class Stock:
     def __init__(self, code: str, name: str = None):
@@ -27,7 +28,4 @@ class Stock:
     @property
     def sigma(self):
         self._sigma = self._sigma or np.std(self.hist['returns'])
-        return self._sigma
-
-    
-            
+        return self._sigma            
