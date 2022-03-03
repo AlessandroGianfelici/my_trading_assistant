@@ -9,3 +9,5 @@ def plot_candle(df):
                                          close=df['Close'])])
     fig.update(layout_yaxis_range = [0,max(df['High'] *1.1)])
     return fig
+
+
