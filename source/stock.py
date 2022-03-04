@@ -17,12 +17,14 @@ class Stock:
         
     @property
     def financials(self):
-        self._financials = self._financials or self.ticker.financials.T.sort_index()
+        if self._financials is None:
+            self._financials = self.ticker.financials.T.sort_index()
         return self._financials
 
     @property
     def balance_sheet(self):
-        self._balance_sheet = self._balance_sheet or self.ticker.balance_sheet.T.sort_index()
+        if self._balance_sheet is None:
+            self._balance_sheet = self.ticker.balance_sheet.T.sort_index()
         return self._balance_sheet
 
     @property
