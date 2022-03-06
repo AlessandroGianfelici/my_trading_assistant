@@ -1,6 +1,6 @@
 import yfinance as yf
 import numpy as np
-
+import pandas as pd
 #https://mrjbq7.github.io/ta-lib/
 
 class Stock:
@@ -17,6 +17,15 @@ class Stock:
         self._balance_sheet = None
         self._forward_PE = None
         self._trailing_PE = None
+        self._open_positions = None
+        self._full_time_employees = None
+
+    @property
+    def open_positions(self):
+        if self._open_positions is None:
+            self._open_positions = pd.read_csv("open_positions.csv", index_col =0)
+            self._open_positions.loc[self._open_positions.index == self.code].reset_index(drop=1)
+        return self._open_positions[['open_jobs', 'YYYYMM']]
 
     @property
     def info(self):
@@ -26,16 +35,13 @@ class Stock:
         
 
     @property
-    def forward_PE(self):
-        if self._forward_PE is None:
-            self._forward_PE = self.info['forwardPE']
-        return self._forward_PE
-        
-    @property
-    def trailing_PE(self):
-        if self._trailing_PE is None:
-            self._trailing_PE = self.info['trailingPE']
-        return self._trailing_PE
+    def full_time_employees(self):
+        if self._full_time_employees is None:
+            try:
+                self._full_time_employees = self.info['fullTimeEmployees']
+            except:
+                self._full_time_employees = self._open_positions['tot_employees'][0]
+        return self._full_time_employees
 
     @property
     def financials(self):
@@ -66,3 +72,7 @@ class Stock:
             self._hist = self.ticker.history(period="max")
             self._hist['returns'] = (self._hist['Close'] - self._hist['Open'])/self._hist['Open']
         return self._hist
+
+    @property
+    def dividends(self):
+        return self.hist['Dividends'].replace({0:None}).dropna()
